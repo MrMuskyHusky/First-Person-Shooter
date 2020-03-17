@@ -4,34 +4,59 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float moveSpeed = 10f;
+    public float moveSpeed;
+    public float runSpeed, walkSpeed, crouchSpeed, jumpSpeed;
+    private float _gravity = 20;
+    //Struct - Contains Multiple Variables (eg...3 floats)
+    private Vector3 _moveDir;
+    //Reference Variable
+    private CharacterController _charController;
 
-    private Rigidbody rigid;
-
-    void Awake()
+    private void Start()
     {
-        rigid = GetComponent<Rigidbody>();
+        _charController = GetComponent<CharacterController>();
     }
-
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        // Get input from user
-        float inputH = Input.GetAxis("Horizontal");
-        float inputV = Input.GetAxis("Vertical");
-        // Get character (cube) to move
-        Move(inputH, inputV);
+        Move();
     }
-
-    public void Move(float inputH, float inputV)
+    private void Move()
     {
-        // Get input from user into 'inputDirection' vector
-        Vector3 inputDirection = new Vector3(inputH, 0, inputV) * moveSpeed;
-        // Convert inputDirection from localspace to worldspace and store in 'direction' variable
-        Vector3 direction = transform.TransformDirection(inputDirection);
-        // Copy rigid.velocity to 'velocity' vector
-        Vector3 velocity = rigid.velocity;
-        // Apply new velocity to 'rigid.velocity' 
-        rigid.velocity = new Vector3(direction.x, velocity.y, direction.z);
+        // If we are grounded
+        if (_charController.isGrounded)
+        {
+            bool isCrouchPressed = Input.GetButton("Crouch");
+            bool isSprintPressed = Input.GetButton("Sprint");
+
+            //set speed
+            if (isCrouchPressed && isSprintPressed)
+            {
+                moveSpeed = walkSpeed;
+            }
+            else if (isSprintPressed)
+            {
+                moveSpeed = runSpeed;
+            }
+            else if (isCrouchPressed)
+            {
+                moveSpeed = crouchSpeed;
+            }
+            else
+            {
+                moveSpeed = walkSpeed;
+            }
+
+            //move this direction based off inputs
+            _moveDir = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * moveSpeed);
+            if (Input.GetButton("Jump"))
+            {
+                _moveDir.y = jumpSpeed;
+            }
+        }
+        //Regardless if we are grounded or not
+        //apply grvity
+        _moveDir.y -= _gravity * Time.deltaTime;
+        //apply mo
+        _charController.Move(_moveDir * Time.deltaTime);
     }
 }

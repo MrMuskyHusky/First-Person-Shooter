@@ -28,5 +28,6 @@ public class Enemy : MonoBehaviour
     void Die()
     {
         SetKinematic(false);
+        GetComponent<Animator>().enabled = false;
     }
 }
