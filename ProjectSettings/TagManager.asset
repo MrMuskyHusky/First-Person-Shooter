@@ -7,6 +7,8 @@ TagManager:
   - Metal
   - Target
   - ExplosiveBarrel
+  - FxTemporaire
+  - Enemy
   layers:
   - Default
   - TransparentFX

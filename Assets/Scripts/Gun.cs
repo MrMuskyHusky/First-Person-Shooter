@@ -66,6 +66,11 @@ public class Gun : MonoBehaviour
             anim.SetBool("Firing", true);
             Shoot();
         }
+        else if(Input.GetButton("Fire1") && (Input.GetButton("Fire2")))
+        {
+            anim.SetBool("Firing", true);
+            isFiring = true;
+        }
         else if(Input.GetButtonUp("Fire1"))
         {
             anim.SetBool("Firing", false);
@@ -77,15 +82,17 @@ public class Gun : MonoBehaviour
     IEnumerator Reload()
     {
         //was running this on button press....but the Reload was constantly waiting....SO WE MOVED IT
-            isReloading = true;
-            Debug.Log("Reloading...");
-            anim.SetBool("Reloading", true);
-            yield return new WaitForSeconds(reloadTime - .25f);
-            anim.SetBool("Reloading", false);
-            yield return new WaitForSeconds(.25f);
-            currentAmmo = maxAmmo;
-            ammoCount.text = currentAmmo.ToString();
-            isReloading = false;
+        isReloading = true;
+        Debug.Log("Reloading...");
+        anim.SetBool("Reloading", true);
+        anim.SetBool("Firing", false);
+        yield return new WaitForSeconds(reloadTime - .25f);
+        anim.SetBool("Reloading", false);
+        anim.SetBool("Firing", false);
+        yield return new WaitForSeconds(.5f);
+        currentAmmo = maxAmmo;
+        ammoCount.text = currentAmmo.ToString();
+        isReloading = false;
         
     }
 
