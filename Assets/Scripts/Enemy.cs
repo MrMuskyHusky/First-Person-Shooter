@@ -110,7 +110,6 @@ public class Enemy : MonoBehaviour
         }
         state = AIState.Fire;
         anim.SetBool("Fire", true);
-        Vector3.Distance(transform.position, player.position) < 8);
         Debug.Log("Enemy is firing");
         // If player in attack range then attack
     }

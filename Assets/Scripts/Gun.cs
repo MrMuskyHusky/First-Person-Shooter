@@ -24,6 +24,7 @@ public class Gun : MonoBehaviour
     public GameObject impactEffect;
     public Transform bulletShell;
     public GameObject bullet;
+    public GameObject bulletHole;
     public Text ammoCount;
 
     public Animator anim; 
@@ -163,6 +164,8 @@ public class Gun : MonoBehaviour
                 impactGO = Instantiate(bullet, bulletShell.position, transform.rotation);
                 impactGO.GetComponent<Rigidbody>().AddForce(bulletShell.right * 250);
                 Destroy(impactGO, 2f);
+                var hitRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                Instantiate(bulletHole, hit.point, hitRotation);
             }
         }
         else
