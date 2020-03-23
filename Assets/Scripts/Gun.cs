@@ -20,6 +20,7 @@ public class Gun : MonoBehaviour
     public Camera fpsCam;
     public ParticleSystem muzzleFlash;
     public AudioSource gunShots;
+    public AudioSource reloadSound;
     public GameObject impactEffect;
     public Transform bulletShell;
     public GameObject bullet;
@@ -29,8 +30,16 @@ public class Gun : MonoBehaviour
 
     private float nextTimeToFire = 0f;
 
+    private Player player;
+
     private void Start()
     {
+        player = GetComponentInParent<Player>();
+        if(player == null)
+        {
+            Debug.LogError("dfds");
+        }
+
         if (currentAmmo == -1)
         {
             currentAmmo = maxAmmo;
@@ -62,14 +71,7 @@ public class Gun : MonoBehaviour
         {
             nextTimeToFire = Time.time + 1f / fireRate;
             isFiring = true;
-            if(isFiring == true)
-            anim.SetBool("Firing", true);
             Shoot();
-        }
-        else if(Input.GetButton("Fire1") && (Input.GetButton("Fire2")))
-        {
-            anim.SetBool("Firing", true);
-            isFiring = true;
         }
         else if(Input.GetButtonUp("Fire1"))
         {
@@ -77,29 +79,31 @@ public class Gun : MonoBehaviour
             isFiring = false;
         }
         Zoom();
+        Walking();
+        Cursor.lockState = CursorLockMode.Locked;
     }
     //Was Running Every frame...yea no dont do that...thats scrubby
     IEnumerator Reload()
     {
         //was running this on button press....but the Reload was constantly waiting....SO WE MOVED IT
         isReloading = true;
+        reloadSound.Play();
+        anim.SetBool("ZoomIn", false);
         Debug.Log("Reloading...");
         anim.SetBool("Reloading", true);
-        anim.SetBool("Firing", false);
         yield return new WaitForSeconds(reloadTime - .25f);
         anim.SetBool("Reloading", false);
-        anim.SetBool("Firing", false);
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.25f);
         currentAmmo = maxAmmo;
         ammoCount.text = currentAmmo.ToString();
         isReloading = false;
-        
     }
 
     void Zoom()
     {
         if (Input.GetButton("Fire2"))
         {
+            player.isZoomedIn = true;
             isZoomingIn = true;
             Debug.Log("Zoom in weapon");
             anim.SetBool("ZoomIn", true);
@@ -107,9 +111,22 @@ public class Gun : MonoBehaviour
         }
         else
         {
+            player.isZoomedIn = false;
             isZoomingIn = false;
             anim.SetBool("ZoomIn", false);
             fpsCam.fieldOfView = 60.0f;
+        }
+    }
+
+    void Walking()
+    {
+        if (Input.GetKey(KeyCode.W))
+        {
+            anim.SetBool("Walk", true);
+        }
+        else
+        {
+            anim.SetBool("Walk", false);
         }
     }
     //PEW PEW WAS RUNNING INTO NEGATIVES COS OLD MATE FORGOT A CAP!
@@ -120,6 +137,7 @@ public class Gun : MonoBehaviour
         {
             gunShots.Play();
             muzzleFlash.Play();
+            anim.SetBool("Firing", true);
             currentAmmo--;
 
             if (ammoCount != null)
@@ -146,6 +164,10 @@ public class Gun : MonoBehaviour
                 impactGO.GetComponent<Rigidbody>().AddForce(bulletShell.right * 250);
                 Destroy(impactGO, 2f);
             }
+        }
+        else
+        {
+            anim.SetBool("Firing", false);
         }
     }
 }

@@ -6,11 +6,14 @@ public class Player : MonoBehaviour
 {
     public float moveSpeed;
     public float runSpeed, walkSpeed, crouchSpeed, jumpSpeed;
+    public float curHealth;
     private float _gravity = 20;
     //Struct - Contains Multiple Variables (eg...3 floats)
     private Vector3 _moveDir;
     //Reference Variable
     private CharacterController _charController;
+
+    public bool isZoomedIn;
 
     private void Start()
     {
@@ -38,6 +41,10 @@ public class Player : MonoBehaviour
                 moveSpeed = runSpeed;
             }
             else if (isCrouchPressed)
+            {
+                moveSpeed = crouchSpeed;
+            }
+            else if(isZoomedIn) //isZoomedIn == true
             {
                 moveSpeed = crouchSpeed;
             }
