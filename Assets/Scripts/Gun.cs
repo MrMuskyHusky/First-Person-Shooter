@@ -9,6 +9,7 @@ public class Gun : MonoBehaviour
     public float range = 100f;
     public float fireRate = 15f;
     public float impaceForce = 50f;
+    public float bulletSpeed = 100f;
 
     public int maxAmmo = 10;
     public int currentAmmo = 30;
@@ -23,7 +24,9 @@ public class Gun : MonoBehaviour
     public AudioSource reloadSound;
     public GameObject impactEffect;
     public Transform bulletShell;
+    public Transform firePoint;
     public GameObject bullet;
+    public GameObject myBullet;
     public GameObject bulletHole;
     public Text ammoCount;
 
@@ -131,7 +134,7 @@ public class Gun : MonoBehaviour
         }
     }
     //PEW PEW WAS RUNNING INTO NEGATIVES COS OLD MATE FORGOT A CAP!
-    void Shoot()
+    public void Shoot()
     {
         //Added the ability to not go below Zero...YEEEE BOI!
         if (currentAmmo > 0)

@@ -1,19 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
     public float moveSpeed;
     public float runSpeed, walkSpeed, crouchSpeed, jumpSpeed;
     public float curHealth;
-    private float _gravity = 20;
+    public float _gravity = 20;
     //Struct - Contains Multiple Variables (eg...3 floats)
     private Vector3 _moveDir;
     //Reference Variable
     private CharacterController _charController;
+    public Text hp;
 
     public bool isZoomedIn;
+    public bool damaged;
 
     private void Start()
     {
@@ -21,10 +24,14 @@ public class Player : MonoBehaviour
     }
     private void Update()
     {
-        Move();
+        float horiz = Input.GetAxis("Horizontal");
+        float vert = Input.GetAxis("Vertical");
+        Move(horiz, vert);
+        hp.text = "HP: " + curHealth;
     }
-    private void Move()
+    public void Move(float horizontal, float vertical)
     {
+        _charController = GetComponent<CharacterController>();
         // If we are grounded
         if (_charController.isGrounded)
         {
@@ -54,7 +61,7 @@ public class Player : MonoBehaviour
             }
 
             //move this direction based off inputs
-            _moveDir = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * moveSpeed);
+            _moveDir = transform.TransformDirection(new Vector3(horizontal, 0, vertical) * moveSpeed);
             if (Input.GetButton("Jump"))
             {
                 _moveDir.y = jumpSpeed;
@@ -65,5 +72,11 @@ public class Player : MonoBehaviour
         _moveDir.y -= _gravity * Time.deltaTime;
         //apply mo
         _charController.Move(_moveDir * Time.deltaTime);
+    }
+
+    public void DamagePlayer(float damage)
+    {
+        damaged = true;
+        curHealth -= damage;
     }
 }

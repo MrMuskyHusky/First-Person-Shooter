@@ -16,6 +16,7 @@ public class MouseLook : MonoBehaviour
     public float minY = -60, maxY = 60;
     private float _rotY;
 
+    public bool isTesting;
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -31,6 +32,10 @@ public class MouseLook : MonoBehaviour
     }
     void Update()
     {
+        if(isTesting == true)
+        {
+            return;
+        }
         if (axis == RotationalAxis.MouseX)
         {
             transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime, 0);
