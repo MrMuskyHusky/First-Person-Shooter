@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
         float horiz = Input.GetAxis("Horizontal");
         float vert = Input.GetAxis("Vertical");
         Move(horiz, vert);
-        hp.text = "HP: " + curHealth;
+        hp.text = "" + curHealth;
     }
     public void Move(float horizontal, float vertical)
     {

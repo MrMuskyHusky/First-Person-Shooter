@@ -45,6 +45,7 @@ public class Enemy : MonoBehaviour
         agent = self.GetComponent<NavMeshAgent>();
         curWaypoint = 1;
         agent.speed = moveSpeed;
+        isDead = false;
         anim = self.GetComponent<Animator>();
         SetKinematic(true);
     }
@@ -63,15 +64,15 @@ public class Enemy : MonoBehaviour
             Patrol();
             Seek();
         }
-        if (curHealth <= 0f)
-        {
-            Die();
-        }
     }
 
     public void Damage(float amount)
     {
         curHealth -= amount;
+        if (curHealth <= 0f)
+        {
+            Die();
+        }
     }
 
     public void Patrol()
@@ -88,7 +89,7 @@ public class Enemy : MonoBehaviour
         // Set agent to target
         agent.destination = waypoints[curWaypoint].position;
         // Are we at the waypoint?
-        if (self.transform.position.x.Equals(agent.destination.x) && self.transform.position.z == agent.destination.z)
+        if (Vector3.Distance (self.transform.position, agent.destination) < 0.5) //(self.transform.position.x.Equals(agent.destination.x) && self.transform.position.z == agent.destination.z)
         {
             if (curWaypoint < waypoints.Length - 1)
             {
@@ -127,14 +128,13 @@ public class Enemy : MonoBehaviour
         if (Vector3.Distance(player.position, self.transform.position) > attackRange || curHealth < 0 || player.GetComponent<Player>().curHealth < 0)
         {
             // Stop Firing
-            agent.enabled = true;
             return;
         }
         state = AIState.Fire;
         anim.SetBool("Fire", true);
         shoot.Play();
-        agent.enabled = false;
         Debug.Log("Enemy is firing");
+        agent.destination = this.transform.position;
         // If player in attack range then attack
     }
     void Die()
@@ -143,6 +143,6 @@ public class Enemy : MonoBehaviour
         SetKinematic(false);
         GetComponent<Animator>().enabled = false;
         isDead = true;
-        agent.destination = this.transform.position;
+        agent.destination = self.transform.position;
     }
 }
