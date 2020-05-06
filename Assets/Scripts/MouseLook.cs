@@ -32,6 +32,14 @@ public class MouseLook : MonoBehaviour
     }
     void Update()
     {
+        if(Time.timeScale == 0)
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
         if(isTesting == true)
         {
             return;

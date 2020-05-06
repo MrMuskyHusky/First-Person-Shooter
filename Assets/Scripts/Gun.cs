@@ -58,6 +58,10 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
+        if(Time.timeScale == 0)
+        {
+            return;
+        }
         if (isReloading)
         {
             return;

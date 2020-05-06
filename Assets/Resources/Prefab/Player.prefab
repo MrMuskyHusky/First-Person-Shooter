@@ -693,12 +693,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6157951064413516099}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.114}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.13500027, y: -0.12779999, z: 0.27899933}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6160619281570931799}
-  m_Father: {fileID: 8377022262407960651}
+  m_Father: {fileID: 8377022262730952695}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6157988830784740229
@@ -907,9 +907,9 @@ MonoBehaviour:
   reloadSound: {fileID: 6158363159642079426}
   impactEffect: {fileID: 100002, guid: 99c73c92ac40473459640b165473206f, type: 3}
   bulletShell: {fileID: 6152289356963146029}
-  bulletEndPoint: {fileID: 0}
-  bulletShellAmmo: {fileID: 0}
+  firePoint: {fileID: 0}
   bullet: {fileID: 0}
+  myBullet: {fileID: 0}
   bulletHole: {fileID: 6491150453938503772, guid: 14b7f3032aee3bc4493aaf0da5f6d26a,
     type: 3}
   ammoCount: {fileID: 0}
@@ -2563,11 +2563,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7295777410865749923}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.13500026, y: -0.12779999, z: 0.1650009}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7293019814884912227}
-  m_Father: {fileID: 8377022262407960651}
+  m_Father: {fileID: 8377022262730952695}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7295785378755835995
@@ -2693,52 +2693,6 @@ Transform:
   m_Father: {fileID: 6160669887587695021}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8377022262407960644
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8377022262407960651}
-  - component: {fileID: 8377022262407960650}
-  m_Layer: 0
-  m_Name: WeaponHolder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8377022262407960651
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8377022262407960644}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.135, y: -0.12779999, z: 0.165}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 7293085892360487931}
-  - {fileID: 6152475521227838117}
-  m_Father: {fileID: 8377022262730952695}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8377022262407960650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8377022262407960644}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 089fa227c51e57e44a2861e6b6a6665e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedWeapon: 0
 --- !u!1 &8377022262517468914
 GameObject:
   m_ObjectHideFlags: 0
@@ -2927,7 +2881,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.64, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 8377022262407960651}
+  - {fileID: 7293085892360487931}
+  - {fileID: 6152475521227838117}
   m_Father: {fileID: 8377022262797383898}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3023,7 +2978,6 @@ GameObject:
   - component: {fileID: 8377022262797383898}
   - component: {fileID: 8377022262797383899}
   - component: {fileID: 8377022262797383892}
-  - component: {fileID: 8377022262797383893}
   - component: {fileID: 8377022262797383897}
   - component: {fileID: 8377022262797383894}
   - component: {fileID: 8377022262797383896}
@@ -3096,20 +3050,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!136 &8377022262797383893
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8377022262797383888}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8377022262797383897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3670,10 +3610,9 @@ MonoBehaviour:
   reloadSound: {fileID: 8378721531540547583}
   impactEffect: {fileID: 100002, guid: 99c73c92ac40473459640b165473206f, type: 3}
   bulletShell: {fileID: 8377022262517468913}
-  bulletEndPoint: {fileID: 1020395116}
-  bulletShellAmmo: {fileID: 1206868768926276, guid: 0c1be510a5f00b449ae006461270ac32,
-    type: 3}
+  firePoint: {fileID: 0}
   bullet: {fileID: 5701686758959501717, guid: e7a0b05fe17613c41be15961e1191750, type: 3}
+  myBullet: {fileID: 0}
   bulletHole: {fileID: 6491150453938503772, guid: 14b7f3032aee3bc4493aaf0da5f6d26a,
     type: 3}
   ammoCount: {fileID: 0}

@@ -1,78 +1,105 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[RequireComponent(typeof(Rigidbody))]
 public class WeaponSwitch : MonoBehaviour
 {
-    public int selectedWeapon = 0;
+    //Game mode
+    int playersTeamID;
 
-    void Start()
+    Rigidbody playerRigidbody;
+
+    //weapons
+    public List<Weapon> weapons;
+    int currentWeapon = 0;
+    int lastWeapon = 0;
+    public float forwardDropOffset;
+    public float upDropOffset;
+
+    private void Start()
     {
-        SelectWeapon();
+        SwitchWeapon(currentWeapon);
+
+        playerRigidbody = GetComponent<Rigidbody>();
+        if (playerRigidbody == null)
+        {
+            Debug.LogError("Player Rigidbody not found");
+        }
     }
 
-    void Update()
+    private void Update()
     {
-        int previousSelectedWeapon = selectedWeapon;
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+        if (Input.GetKeyDown(KeyCode.X))
         {
-            if (selectedWeapon >= transform.childCount - 1)
-            {
-                selectedWeapon = 0;
-            }
-            else
-            {
-                selectedWeapon++;
-            }
-        }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-        {
-            if (selectedWeapon <= 0)
-            {
-                selectedWeapon = transform.childCount - 1;
-            }
-            else
-            {
-                selectedWeapon--;
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            selectedWeapon = 0;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2) && transform.childCount >= 2)
-        {
-            selectedWeapon = 1;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3) && transform.childCount >= 3)
-        {
-            selectedWeapon = 1;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4) && transform.childCount >= 4)
-        {
-            selectedWeapon = 1;
-        }
-
-        if (previousSelectedWeapon != selectedWeapon)
-        {
-            SelectWeapon();
+            DropWeapon(currentWeapon);
         }
     }
-    void SelectWeapon()
-    {
-        int i = 0;
-        foreach (Transform weapon in transform)
-        {
-            if(i == selectedWeapon)
-            {
-                weapon.gameObject.SetActive(true);
 
-            }
-            else
-            {
-                weapon.gameObject.SetActive(false);
-            }
-            i++;
+    public void SwitchWeapon(int weaponID, bool overrideLock = false)
+    {
+        if (!overrideLock && weapons[currentWeapon].isWeaponLocked == true)
+        {
+            return;
         }
+
+        lastWeapon = currentWeapon;
+        currentWeapon = weaponID;
+
+        foreach (Weapon weapon in weapons)
+        {
+            weapon.gameObject.SetActive(false);
+        }
+
+        weapons[currentWeapon].gameObject.SetActive(true);
+    }
+
+
+    public void DropWeapon(int weaponID)
+    {
+        if (weapons[weaponID].isWeaponDropable)
+        {
+            Vector3 forward = transform.forward;
+            forward.y = 0;
+            forward *= forwardDropOffset;
+            forward.y = upDropOffset;
+            Vector3 dropLocation = transform.position + forward;
+
+
+            weapons[weaponID].worldWeaponGameObject.transform.position = dropLocation;
+            weapons[weaponID].worldWeaponGameObject.SetActive(true);
+
+
+            Rigidbody flagRigidbody = weapons[weaponID].worldWeaponGameObject.GetComponent<Rigidbody>();
+            if (flagRigidbody != null && playerRigidbody != null)
+            {
+                flagRigidbody.velocity = playerRigidbody.velocity;
+            }
+
+            SwitchWeapon(lastWeapon, true);//if possible
+        }
+    }
+
+    public void ReturnWeapon(int weaponID)
+    {
+        if (weapons[weaponID].isWeaponDropable)//flag
+        {
+            Vector3 returnLocation = weapons[weaponID].originalLocation;
+
+            weapons[weaponID].worldWeaponGameObject.transform.position = returnLocation;
+            weapons[weaponID].worldWeaponGameObject.SetActive(true);
+
+            SwitchWeapon(lastWeapon, true);//if possible
+        }
+    }
+
+    //bad
+    public bool isHoldingFlag()
+    {
+        if (currentWeapon == 1)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
