@@ -4,15 +4,34 @@ using UnityEngine;
 
 public class Flag : MonoBehaviour
 {
+    [SerializeField] int teamID;
+    public Vector3 originalLocation;
+
+
+    private void Start()
+    {
+        originalLocation = transform.position;
+ 
+    }
+
+
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Player Captured the flag");
+        Player player = other.GetComponent<Player>();
 
-        WeaponSwitch player = other.GetComponent<WeaponSwitch>();
 
         if(player != null)
-        {
-            player.SwitchWeapon(2);
+        {//its a player
+            if (player.teamID == teamID)
+            {//cant pick up your own team's flag
+
+                //return flag
+                return;
+            }
+
+            Debug.Log("Capture Flag");
+
+            player.PickUpWeapon(gameObject, originalLocation, teamID,1);
 
             gameObject.SetActive(false);
         }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CaptureZone : MonoBehaviour
 {
+    [SerializeField] int teamID;
+
     GameModeCTF gameModeCTF;
     private void Start()
     {
@@ -17,13 +19,18 @@ public class CaptureZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        WeaponSwitch player = other.GetComponent<WeaponSwitch>();
+        Player player = other.GetComponent<Player>();
 
         if(player != null && gameModeCTF != null)
         {
-            if (player.isHoldingFlag())
+            if (player.GetWeaponTeamID() != teamID)
             {
-                gameModeCTF.AddScore(0, 1);
+                return;
+            }
+
+            if (player.IsHoldingFlag())
+            {
+                gameModeCTF.AddScore(player.teamID, 1);
                 player.ReturnWeapon(1);
             }
         }

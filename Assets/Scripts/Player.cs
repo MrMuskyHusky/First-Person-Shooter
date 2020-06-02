@@ -1,82 +1,114 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Player : MonoBehaviour
 {
-    public float moveSpeed;
-    public float runSpeed, walkSpeed, crouchSpeed, jumpSpeed;
-    public float curHealth;
-    public float _gravity = 20;
-    //Struct - Contains Multiple Variables (eg...3 floats)
-    private Vector3 _moveDir;
-    //Reference Variable
-    private CharacterController _charController;
-    public Text hp;
+    //Game mode
+    [SerializeField] int playersTeamID;
+    public int teamID{ get { return playersTeamID; } }
 
-    public bool isZoomedIn;
-    public bool damaged;
+    Rigidbody playerRigidbody;
+
+    //weapons
+    public List<Weapon> weapons;
+    int currentWeapon = 0;
+    int lastWeapon = 0;
+    public float forwardDropOffset;
+    public float upDropOffset;
 
     private void Start()
     {
-        _charController = GetComponent<CharacterController>();
+        SwitchWeapon(currentWeapon);
+
+        playerRigidbody = GetComponent<Rigidbody>();
+        if(playerRigidbody == null)
+        {
+            Debug.LogError("Player Rigidbody not found");
+        }
     }
+
     private void Update()
     {
-        float horiz = Input.GetAxis("Horizontal");
-        float vert = Input.GetAxis("Vertical");
-        Move(horiz, vert);
-        hp.text = "" + curHealth;
-    }
-    public void Move(float horizontal, float vertical)
-    {
-        _charController = GetComponent<CharacterController>();
-        // If we are grounded
-        if (_charController.isGrounded)
+        if (Input.GetKeyDown(KeyCode.X))
         {
-            bool isCrouchPressed = Input.GetButton("Crouch");
-            bool isSprintPressed = Input.GetButton("Sprint");
-
-            //set speed
-            if (isCrouchPressed && isSprintPressed)
-            {
-                moveSpeed = walkSpeed;
-            }
-            else if (isSprintPressed)
-            {
-                moveSpeed = runSpeed;
-            }
-            else if (isCrouchPressed)
-            {
-                moveSpeed = crouchSpeed;
-            }
-            else if(isZoomedIn) //isZoomedIn == true
-            {
-                moveSpeed = crouchSpeed;
-            }
-            else
-            {
-                moveSpeed = walkSpeed;
-            }
-
-            //move this direction based off inputs
-            _moveDir = transform.TransformDirection(new Vector3(horizontal, 0, vertical) * moveSpeed);
-            if (Input.GetButton("Jump"))
-            {
-                _moveDir.y = jumpSpeed;
-            }
+            DropWeapon(currentWeapon);
         }
-        //Regardless if we are grounded or not
-        //apply grvity
-        _moveDir.y -= _gravity * Time.deltaTime;
-        //apply mo
-        _charController.Move(_moveDir * Time.deltaTime);
     }
 
-    public void DamagePlayer(float damage)
+    public void PickUpWeapon(GameObject weaponObject, Vector3 originalLocation, int teamID, int weaponID, bool overrideLock = false)
     {
-        damaged = true;
-        curHealth -= damage;
+        SwitchWeapon(weaponID, overrideLock);
+
+        weapons[weaponID].SetWeaponGameObject(teamID, weaponObject, originalLocation);
+ 
+    }
+
+    public void SwitchWeapon(int weaponID, bool overrideLock = false)
+    {
+        if(!overrideLock && weapons[currentWeapon].isWeaponLocked == true)
+        {
+            return;
+        }
+
+        lastWeapon = currentWeapon;
+        currentWeapon = weaponID;
+
+        foreach (Weapon weapon in weapons)
+        {
+            weapon.gameObject.SetActive(false);
+        }
+
+        weapons[currentWeapon].gameObject.SetActive(true);
+    }
+
+
+    public void DropWeapon(int weaponID)
+    {
+        if (weapons[weaponID].isWeaponDropable)
+        {
+            Vector3 forward = transform.forward;
+            forward.y = 0;
+            forward *= forwardDropOffset;
+            forward.y = upDropOffset;
+            Vector3 dropLocation = transform.position + forward;
+
+            weapons[weaponID].DropWeapon(playerRigidbody, dropLocation);
+            weapons[weaponID].worldWeaponGameObject.SetActive(true);
+
+
+            SwitchWeapon(lastWeapon,true);//if possible
+        }
+    }
+
+    public void ReturnWeapon(int weaponID)
+    {
+        if (weapons[weaponID].isWeaponDropable)//flag
+        {
+            Vector3 returnLocation = weapons[weaponID].originalLocation;
+
+            weapons[weaponID].worldWeaponGameObject.transform.position = returnLocation;
+            weapons[weaponID].worldWeaponGameObject.SetActive(true);
+
+            SwitchWeapon(lastWeapon,true);//if possible
+        }
+    }
+
+    //bad
+    public bool IsHoldingFlag()
+    {
+        if(currentWeapon == 1)
+        { 
+            return true;
+        }
+
+        return false;
+    }
+    
+
+    public int GetWeaponTeamID()
+    {
+        return weapons[currentWeapon].teamID;
     }
 }

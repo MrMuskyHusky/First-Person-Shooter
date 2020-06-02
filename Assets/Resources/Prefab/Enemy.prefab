@@ -73,7 +73,6 @@ GameObject:
   - component: {fileID: 3761779252805830963}
   - component: {fileID: 6538810550044435529}
   - component: {fileID: 175604738740189987}
-  - component: {fileID: 8164518710528512266}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -139,38 +138,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &8164518710528512266
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 175604738740189984}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 509800d75e3ae3045ba24543c6801b19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  state: 0
-  curHealth: 100
-  maxHealth: 100
-  moveSpeed: 1.8
-  attackRange: 10
-  attackSpeed: 1
-  sightRange: 15
-  baseDamage: 5
-  fireRate: 3.5
-  curWaypoint: 1
-  difficulty: 0
-  isDead: 0
-  self: {fileID: 175604738740189984}
-  player: {fileID: 0}
-  waypointParent: {fileID: 0}
-  agent: {fileID: 175604738740189987}
-  shoot: {fileID: 8164518709933616775}
-  healthCanvas: {fileID: 0}
-  healthBar: {fileID: 0}
-  anim: {fileID: 6538810550044435529}
 --- !u!1 &242975317640676985
 GameObject:
   m_ObjectHideFlags: 0

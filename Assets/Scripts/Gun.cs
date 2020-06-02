@@ -34,11 +34,11 @@ public class Gun : MonoBehaviour
 
     private float nextTimeToFire = 0f;
 
-    private Player player;
+    private PlayerController player;
 
     private void Start()
     {
-        player = GetComponentInParent<Player>();
+        player = GetComponentInParent<PlayerController>();
         if(player == null)
         {
             Debug.LogError("dfds");
