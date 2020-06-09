@@ -2,31 +2,52 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Mirror;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
-    public float moveSpeed;
-    public float runSpeed, walkSpeed, crouchSpeed, jumpSpeed;
-    public float curHealth;
-    public float _gravity = 20;
+    [SerializeField] public float moveSpeed;
+    [SerializeField] public float runSpeed, walkSpeed, crouchSpeed, jumpSpeed;
+    [SerializeField] public float curHealth;
+    [SerializeField] public float _gravity = 20;
     //Struct - Contains Multiple Variables (eg...3 floats)
     private Vector3 _moveDir;
-    private Rigidbody rb;
+    [SerializeField] private Rigidbody rb;
     //Reference Variable
-    public Text hp;
+    [SerializeField] public Text hp;
 
-    public bool isZoomedIn;
-    public bool damaged;
-    public bool isGrounded;
+    [SerializeField] public bool isZoomedIn;
+    [SerializeField] public bool damaged;
+    [SerializeField] public bool isGrounded;
 
-    private float verticalDirection;
-    private float horizontalDirection;
+    [SerializeField] private float verticalDirection;
+    [SerializeField] private float horizontalDirection;
 
+    private Controls playerControls;
+    private Controls PlayerControls
+    {
+        get
+        {
+            if (playerControls != null) return playerControls;
+            return playerControls = new Controls();
+        }
+    }
+
+    public override void OnStartAuthority()
+    {
+        enabled = true;
+
+        PlayerControls.Player.Move.performed += ctx => SetMovement(ctx.ReadValue<Vector2>());
+        PlayerControls.Player.Move.canceled += ctx => ResetMovement();
+    }
+
+    [ClientCallback]
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
 
+    [ClientCallback]
     private void Update()
     {
         verticalDirection = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
@@ -41,6 +62,14 @@ public class PlayerController : MonoBehaviour
 
         Move(horizontalDirection, verticalDirection);
     }
+
+    [ClientCallback]
+    private void OnEnable() => PlayerControls.Enable();
+
+    [ClientCallback]
+    private void OnDisable() => PlayerControls.Disable();
+
+    [Client]
     public void Move(float horizontal, float vertical)
     {
         bool isCrouchPressed = Input.GetButton("Crouch");
@@ -76,6 +105,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    [Client]
     public void DamagePlayer(float damage)
     {
         damaged = true;
@@ -83,8 +113,21 @@ public class PlayerController : MonoBehaviour
         hp.text = curHealth.ToString();
     }
 
+    [Client]
     void OnCollisionStay()
     {
         isGrounded = true;
+    }
+
+    [Client]
+    private void SetMovement(Vector3 movement)
+    {
+        _moveDir = movement;
+    }
+
+    [Client]
+    private void ResetMovement()
+    {
+        _moveDir = Vector3.zero;
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class MouseLook : MonoBehaviour
+using Mirror;
+public class MouseLook : NetworkBehaviour
 {
     public enum RotationalAxis
     {
@@ -10,17 +11,37 @@ public class MouseLook : MonoBehaviour
     }
 
     [Header("Rotation Variables")]
-    public RotationalAxis axis = RotationalAxis.MouseX;
+    [SerializeField] public RotationalAxis axis = RotationalAxis.MouseX;
     [Range(0, 200)]
-    public float sensitivity = 100;
-    public float minY = -60, maxY = 60;
+    [SerializeField] public float sensitivity = 100;
+    [SerializeField] public float minY = -60, maxY = 60;
+    [SerializeField] private Camera cam = null;
     private float _rotY;
 
     public bool isTesting;
-    void Start()
+
+    private Controls playerControls;
+    private Controls PlayerControls
+    {
+        get
+        {
+            if (playerControls != null) return playerControls;
+            return playerControls = new Controls();
+        }
+    }
+    private Camera transposer;
+    public override void OnStartAuthority()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        transposer = gameObject.GetComponent<Camera>();
+        cam.gameObject.SetActive(true);
+        enabled = true;
+    }
+
+    [ClientCallback]
+    private void Start()
+    {
         if (GetComponent<Rigidbody>())
         {
             GetComponent<Rigidbody>().freezeRotation = true;
@@ -30,9 +51,21 @@ public class MouseLook : MonoBehaviour
             axis = RotationalAxis.MouseY;
         }
     }
+
+    [ClientCallback]
+    private void OnEnable() => PlayerControls.Enable();
+
+    [ClientCallback]
+    private void OnDisable() => PlayerControls.Disable();
+
     void Update()
     {
-        if(Time.timeScale == 0)
+        Look();
+    }
+
+    private void Look()
+    {
+        if (Time.timeScale == 0)
         {
             Cursor.lockState = CursorLockMode.None;
         }
@@ -40,7 +73,7 @@ public class MouseLook : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
         }
-        if(isTesting == true)
+        if (isTesting == true)
         {
             return;
         }

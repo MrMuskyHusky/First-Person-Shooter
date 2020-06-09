@@ -4658,6 +4658,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 925372865}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1651357872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5393,7 +5404,7 @@ MonoBehaviour:
     type: 3}
   gamePlayerPrefab: {fileID: 6121413348601131607, guid: d864a51296a3bd64386d949b75a75434,
     type: 3}
-  playerSpawnSystem: {fileID: 581253156391543985, guid: b471833c0de10814d8936cfba34d3f9f,
+  playerSpawnSystem: {fileID: 2350253503782532952, guid: b471833c0de10814d8936cfba34d3f9f,
     type: 3}
 --- !u!114 &1830426970
 MonoBehaviour:

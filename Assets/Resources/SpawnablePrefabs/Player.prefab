@@ -1023,7 +1023,7 @@ MonoBehaviour:
   damage: 13
   range: 60
   fireRate: 3
-  impaceForce: 50
+  impaceForce: 0
   bulletSpeed: 20
   maxAmmo: 12
   currentAmmo: 12
@@ -3017,7 +3017,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8377022262730952695
 Transform:
   m_ObjectHideFlags: 0
@@ -3098,10 +3098,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb425a975d509c4428d0f28f69856f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   axis: 1
   sensitivity: 100
   minY: -60
   maxY: 60
+  cam: {fileID: 8377022262730952688}
   isTesting: 0
 --- !u!1 &8377022262797383888
 GameObject:
@@ -3174,7 +3177,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8377022262797383888}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3218,10 +3221,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb425a975d509c4428d0f28f69856f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   axis: 0
   sensitivity: 100
   minY: -60
   maxY: 60
+  cam: {fileID: 8377022262730952688}
   isTesting: 0
 --- !u!114 &7507378925076224553
 MonoBehaviour:
@@ -3235,6 +3241,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 493af3f69ffef584e941c1b7015bc272, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   moveSpeed: 1
   runSpeed: 6
   walkSpeed: 4
@@ -3242,10 +3250,13 @@ MonoBehaviour:
   jumpSpeed: 1
   curHealth: 100
   _gravity: 20
+  rb: {fileID: 1128626296}
   hp: {fileID: 0}
   isZoomedIn: 0
   damaged: 0
   isGrounded: 0
+  verticalDirection: 0
+  horizontalDirection: 0
 --- !u!54 &1128626296
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3802,7 +3813,7 @@ MonoBehaviour:
   damage: 21.5
   range: 100
   fireRate: 10
-  impaceForce: 100
+  impaceForce: 0
   bulletSpeed: 100
   maxAmmo: 30
   currentAmmo: 30
