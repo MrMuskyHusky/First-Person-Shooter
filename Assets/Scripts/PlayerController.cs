@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] public float _gravity = 20;
     //Struct - Contains Multiple Variables (eg...3 floats)
     private Vector3 _moveDir;
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Rigidbody rb = null;
     //Reference Variable
     [SerializeField] public Text hp;
 
@@ -42,12 +42,12 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ClientCallback]
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
+    private void OnEnable() => PlayerControls.Enable();
 
     [ClientCallback]
+    private void OnDisable() => PlayerControls.Disable();
+
+    [Client]
     private void Update()
     {
         verticalDirection = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
@@ -62,12 +62,6 @@ public class PlayerController : NetworkBehaviour
 
         Move(horizontalDirection, verticalDirection);
     }
-
-    [ClientCallback]
-    private void OnEnable() => PlayerControls.Enable();
-
-    [ClientCallback]
-    private void OnDisable() => PlayerControls.Disable();
 
     [Client]
     public void Move(float horizontal, float vertical)

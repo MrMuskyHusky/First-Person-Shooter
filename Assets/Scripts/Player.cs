@@ -1,23 +1,45 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     //Game mode
     [SerializeField] int playersTeamID;
-    public int teamID{ get { return playersTeamID; } }
+    [SerializeField] public int teamID{ get { return playersTeamID; } }
 
     Rigidbody playerRigidbody;
 
     //weapons
-    public List<Weapon> weapons;
-    int currentWeapon = 0;
-    int lastWeapon = 0;
-    public float forwardDropOffset;
-    public float upDropOffset;
+    [SerializeField] public List<Weapon> weapons;
+    [SerializeField] int currentWeapon = 0;
+    [SerializeField] int lastWeapon = 0;
+    [SerializeField] public float forwardDropOffset;
+    [SerializeField] public float upDropOffset;
 
+    private Controls playerControls;
+    private Controls PlayerControls
+    {
+        get
+        {
+            if (playerControls != null) return playerControls;
+            return playerControls = new Controls();
+        }
+    }
+    public override void OnStartAuthority()
+    {
+        enabled = true;
+    }
+
+    [ClientCallback]
+    private void OnEnable() => PlayerControls.Enable();
+
+    [ClientCallback]
+    private void OnDisable() => PlayerControls.Disable();
+
+    [Client]
     private void Start()
     {
         SwitchWeapon(currentWeapon);
@@ -29,6 +51,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Client]
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.X))
@@ -37,6 +60,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Client]
     public void PickUpWeapon(GameObject weaponObject, Vector3 originalLocation, int teamID, int weaponID, bool overrideLock = false)
     {
         SwitchWeapon(weaponID, overrideLock);
@@ -45,6 +69,7 @@ public class Player : MonoBehaviour
  
     }
 
+    [Client]
     public void SwitchWeapon(int weaponID, bool overrideLock = false)
     {
         if(!overrideLock && weapons[currentWeapon].isWeaponLocked == true)
@@ -63,7 +88,7 @@ public class Player : MonoBehaviour
         weapons[currentWeapon].gameObject.SetActive(true);
     }
 
-
+    [Client]
     public void DropWeapon(int weaponID)
     {
         if (weapons[weaponID].isWeaponDropable)
@@ -82,6 +107,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Client]
     public void ReturnWeapon(int weaponID)
     {
         if (weapons[weaponID].isWeaponDropable)//flag
@@ -96,6 +122,7 @@ public class Player : MonoBehaviour
     }
 
     //bad
+    [Client]
     public bool IsHoldingFlag()
     {
         if(currentWeapon == 1)
@@ -105,8 +132,8 @@ public class Player : MonoBehaviour
 
         return false;
     }
-    
 
+    [Client]
     public int GetWeaponTeamID()
     {
         return weapons[currentWeapon].teamID;

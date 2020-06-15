@@ -74,6 +74,7 @@ GameObject:
   - component: {fileID: 6538810550044435529}
   - component: {fileID: 175604738740189987}
   - component: {fileID: -5167589463493346881}
+  - component: {fileID: 1518321767}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -88,7 +89,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 175604738740189984}
-  m_LocalRotation: {x: 0, y: 1, z: -0, w: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 10.305977, y: 0.056, z: 16.888172}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -126,8 +127,8 @@ NavMeshAgent:
   m_GameObject: {fileID: 175604738740189984}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.4
-  m_Speed: 5
+  m_Radius: 0.5
+  m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -135,7 +136,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1.8
+  m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -155,6 +156,38 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &1518321767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175604738740189984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7d6329f266948d4d84e3359e1d4f519, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  curHealth: 100
+  maxHealth: 100
+  moveSpeed: 1.8
+  attackRange: 10
+  attackSpeed: 1
+  sightRange: 15
+  baseDamage: 5
+  fireRate: 3.5
+  curWaypoint: 1
+  difficulty: 1
+  isDead: 0
+  self: {fileID: 175604738740189984}
+  player: {fileID: 0}
+  waypointParent: {fileID: 0}
+  agent: {fileID: 175604738740189987}
+  shoot: {fileID: 8164518709933616775}
+  healthCanvas: {fileID: 0}
+  healthBar: {fileID: 0}
+  anim: {fileID: 6538810550044435529}
 --- !u!1 &242975317640676985
 GameObject:
   m_ObjectHideFlags: 0
@@ -3384,7 +3417,8 @@ AudioSource:
   m_GameObject: {fileID: 8164518709933616773}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 262741d1e9aa92b4f89c460e4f637c4e,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 38b450e2adcb6f542acc8c1d423bd8dc, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1

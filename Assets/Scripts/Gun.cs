@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Mirror;
 
-public class Gun : MonoBehaviour
+public class Gun : NetworkBehaviour
 {
-    public float damage = 10f;
-    public float range = 100f;
-    public float fireRate = 15f;
-    public float impaceForce = 50f;
-    public float bulletSpeed = 100f;
+    [SerializeField] public float damage = 10f;
+    [SerializeField] public float range = 100f;
+    [SerializeField] public float fireRate = 15f;
+    [SerializeField] public float impaceForce = 50f;
+    [SerializeField] public float bulletSpeed = 100f;
+    [SerializeField] private float nextTimeToFire = 0f;
 
-    public int maxAmmo = 10;
-    public int currentAmmo = 30;
-    public float reloadTime = 1f;
-    public bool isReloading = false;
-    public bool isZoomingIn = false;
-    public bool isFiring = false;
+    [SerializeField] public int maxAmmo = 10;
+    [SerializeField] public int currentAmmo = 30;
+    [SerializeField] public float reloadTime = 1f;
+    [SerializeField] public bool isReloading = false;
+    [SerializeField] public bool isZoomingIn = false;
+    [SerializeField] public bool isFiring = false;
 
     public Camera fpsCam;
     public ParticleSystem muzzleFlash;
@@ -31,10 +33,27 @@ public class Gun : MonoBehaviour
     public Text ammoCount;
 
     public Animator anim; 
-
-    private float nextTimeToFire = 0f;
-
     private PlayerController player;
+
+    private Controls playerControls;
+    private Controls PlayerControls
+    {
+        get
+        {
+            if (playerControls != null) return playerControls;
+            return playerControls = new Controls();
+        }
+    }
+    public override void OnStartAuthority()
+    {
+        enabled = true;
+    }
+
+    [ClientCallback]
+    private void OnEnable() => PlayerControls.Enable();
+
+    [ClientCallback]
+    private void OnDisable() => PlayerControls.Disable();
 
     private void Start()
     {
@@ -48,14 +67,11 @@ public class Gun : MonoBehaviour
         {
             currentAmmo = maxAmmo;
         }
-    }
-
-    void OnEnable()
-    {
         isReloading = false;
         anim.SetBool("Reloading", false);
     }
 
+    [Client]
     void Update()
     {
         if(Time.timeScale == 0)
@@ -91,6 +107,7 @@ public class Gun : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
     //Was Running Every frame...yea no dont do that...thats scrubby
+    [Client]
     IEnumerator Reload()
     {
         //was running this on button press....but the Reload was constantly waiting....SO WE MOVED IT
@@ -103,10 +120,10 @@ public class Gun : MonoBehaviour
         anim.SetBool("Reloading", false);
         yield return new WaitForSeconds(.25f);
         currentAmmo = maxAmmo;
-        ammoCount.text = currentAmmo.ToString();
         isReloading = false;
     }
 
+    [Client]
     void Zoom()
     {
         if (Input.GetButton("Fire2"))
@@ -126,6 +143,7 @@ public class Gun : MonoBehaviour
         }
     }
 
+    [Client]
     void Walking()
     {
         if (Input.GetKey(KeyCode.W))
@@ -138,6 +156,7 @@ public class Gun : MonoBehaviour
         }
     }
     //PEW PEW WAS RUNNING INTO NEGATIVES COS OLD MATE FORGOT A CAP!
+    [Client]
     public void Shoot()
     {
         //Added the ability to not go below Zero...YEEEE BOI!

@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: c17fd81be89af06498966029db416bdb
   - enabled: 1
-    path: Assets/Scenes/Game_Map_01.unity
+    path: Assets/Scenes/One vs One.unity
     guid: c0086ae8ee76a414f8783bf32c06d210
   m_configObjects: {}
