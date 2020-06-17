@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
-
+/// <summary>
+/// Weapon details
+/// </summary>
 public class Gun : NetworkBehaviour
 {
     [SerializeField] public float damage = 10f;
@@ -15,10 +17,14 @@ public class Gun : NetworkBehaviour
 
     [SerializeField] public int maxAmmo = 10;
     [SerializeField] public int currentAmmo = 30;
+    [SerializeField] public int clips;
+    [SerializeField] public int maxClips;
     [SerializeField] public float reloadTime = 1f;
     [SerializeField] public bool isReloading = false;
     [SerializeField] public bool isZoomingIn = false;
     [SerializeField] public bool isFiring = false;
+
+    [SerializeField] private Gun gun = null;
 
     public Camera fpsCam;
     public ParticleSystem muzzleFlash;
@@ -31,30 +37,16 @@ public class Gun : NetworkBehaviour
     public GameObject myBullet;
     public GameObject bulletHole;
     public Text ammoCount;
+    public Text clipsCount;
 
-    public Animator anim; 
+    public Animator anim;
     private PlayerController player;
-
-    private Controls playerControls;
-    private Controls PlayerControls
-    {
-        get
-        {
-            if (playerControls != null) return playerControls;
-            return playerControls = new Controls();
-        }
-    }
     public override void OnStartAuthority()
     {
         enabled = true;
     }
 
-    [ClientCallback]
-    private void OnEnable() => PlayerControls.Enable();
-
-    [ClientCallback]
-    private void OnDisable() => PlayerControls.Disable();
-
+    [Client]
     private void Start()
     {
         player = GetComponentInParent<PlayerController>();
@@ -69,6 +61,8 @@ public class Gun : NetworkBehaviour
         }
         isReloading = false;
         anim.SetBool("Reloading", false);
+        clipsCount.text = clips.ToString("/ ") + clips;
+        clips = maxClips;
     }
 
     [Client]
@@ -102,11 +96,16 @@ public class Gun : NetworkBehaviour
             anim.SetBool("Firing", false);
             isFiring = false;
         }
+        clipsCount.text = clips.ToString("/ ") + clips;
         Zoom();
         Walking();
         Cursor.lockState = CursorLockMode.Locked;
     }
     //Was Running Every frame...yea no dont do that...thats scrubby
+    /// <summary>
+    /// Reset ammocount
+    /// </summary>
+    /// <returns></returns>
     [Client]
     IEnumerator Reload()
     {
@@ -120,9 +119,14 @@ public class Gun : NetworkBehaviour
         anim.SetBool("Reloading", false);
         yield return new WaitForSeconds(.25f);
         currentAmmo = maxAmmo;
+        ammoCount.text = currentAmmo.ToString();
+        clips--;
+        clipsCount.text = clips.ToString("/ ") + clips;
         isReloading = false;
     }
-
+    /// <summary>
+    /// Zoom in with there weapon
+    /// </summary>
     [Client]
     void Zoom()
     {
@@ -142,7 +146,9 @@ public class Gun : NetworkBehaviour
             fpsCam.fieldOfView = 60.0f;
         }
     }
-
+    /// <summary>
+    /// Play walking animation if walking around
+    /// </summary>
     [Client]
     void Walking()
     {
@@ -156,6 +162,9 @@ public class Gun : NetworkBehaviour
         }
     }
     //PEW PEW WAS RUNNING INTO NEGATIVES COS OLD MATE FORGOT A CAP!
+    /// <summary>
+    /// Be able to shoot with there weapon
+    /// </summary>
     [Client]
     public void Shoot()
     {
@@ -174,16 +183,12 @@ public class Gun : NetworkBehaviour
                 RaycastHit hit;
             if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
             {
-                Debug.Log(hit.transform.name);
-
-                Enemy enemy = hit.transform.GetComponentInParent<Enemy>();
-                if (enemy != null)
+                Debug.Log("Hit");
+                PlayerController playershooter = hit.collider.GetComponent<PlayerController>();
+                if (playershooter != null)
                 {
-                    enemy.Damage(damage);
-                }
-                if (hit.rigidbody != null)
-                {
-                    hit.rigidbody.AddForce(-transform.position * impaceForce);
+                    Debug.Log("Update Taking Damage");
+                    playershooter.TakeDamage(20f);
                 }
 
                 GameObject impactGO = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));

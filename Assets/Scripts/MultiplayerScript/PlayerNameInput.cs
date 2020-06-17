@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+/// <summary>
+/// Get the players name 
+/// </summary>
 public class PlayerNameInput : MonoBehaviour
 {
     [Header ("UI")]
@@ -43,12 +45,17 @@ public class PlayerNameInput : MonoBehaviour
 
         SetPlayerName(defaultName);
     }
-
+    /// <summary>
+    /// Set players name what they have chose.
+    /// </summary>
+    /// <param name="name"></param>
     public void SetPlayerName(string name)
     {
         continueButton.interactable = !string.IsNullOrEmpty(name);
     }
-
+    /// <summary>
+    /// Save the players name when created
+    /// </summary>
     public void SavePlayerName()
     {
         DisplayName = nameInputField.text;

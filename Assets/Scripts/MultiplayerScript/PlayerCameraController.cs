@@ -4,6 +4,9 @@ using UnityEngine;
 using Mirror;
 using Cinemachine;
 using UnityEngine.InputSystem;
+/// <summary>
+/// Be able to look around
+/// </summary>
 public class PlayerCameraController : NetworkBehaviour
 {
     [Header("Camera")]
@@ -32,6 +35,10 @@ public class PlayerCameraController : NetworkBehaviour
     private void OnEnable() => PlayerControls.Enable();
     [ClientCallback]
     private void OnDisable() => PlayerControls.Disable();
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="lookAxis"></param>
     private void Look(Vector2 lookAxis)
     {
         float followOffset = Mathf.Clamp(

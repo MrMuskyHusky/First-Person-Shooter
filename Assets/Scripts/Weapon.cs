@@ -1,16 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Weapon : MonoBehaviour
+using Mirror;
+/// <summary>
+/// Check teamID, isWeaponLocked? isWeaponDropable.
+/// </summary>
+public class Weapon : NetworkBehaviour
 {
-    public int teamID;
-    public bool isWeaponLocked = false;
-    public bool isWeaponDropable = false;
+    [SerializeField] public int teamID;
+    [SerializeField] public bool isWeaponLocked = false;
+    [SerializeField] public bool isWeaponDropable = false;
 
-    public GameObject worldWeaponGameObject;
+    [SerializeField] public GameObject worldWeaponGameObject;
     public Vector3 originalLocation;
 
+    [SerializeField] private Weapon weapon = null;
+
+
+    public override void OnStartAuthority()
+    {
+        enabled = true;
+        weapon.gameObject.SetActive(true);
+    }
+    /// <summary>
+    /// Set weapon to the current teamID player.
+    /// </summary>
+    /// <param name="teamID"></param>
+    /// <param name="worldGameObject"></param>
+    /// <param name="originalLocation"></param>
+    [Client]
     public void SetWeaponGameObject(int teamID, GameObject worldGameObject, Vector3 originalLocation)
     {
         this.teamID = teamID;
@@ -20,7 +38,12 @@ public class Weapon : MonoBehaviour
         }
         this.originalLocation = originalLocation;
     }
-
+    /// <summary>
+    /// Drop weapon at set dropLocation
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="dropLocation"></param>
+    [Client]
     public void DropWeapon(Rigidbody player, Vector3 dropLocation)
     {
         float distanceToDrop = Vector3.Distance(Camera.main.transform.position, dropLocation);

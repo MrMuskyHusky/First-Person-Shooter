@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+/// <summary>
+/// Spawn players in the world scene
+/// </summary>
 public class PlayerSpawnSystem : NetworkBehaviour
 {
     [SerializeField] private GameObject playerPrefab = null;
@@ -14,6 +16,10 @@ public class PlayerSpawnSystem : NetworkBehaviour
 
     NetworkManagerLobby networkManagerLobby;
 
+    /// <summary>
+    /// Add spawnpoints where they are set
+    /// </summary>
+    /// <param name="spawnTransform"></param>
     public static void AddSpawnPoint(Transform spawnTransform)
     {
         spawnPoints.Add(spawnTransform);
@@ -33,7 +39,10 @@ public class PlayerSpawnSystem : NetworkBehaviour
     {
         NetworkManagerLobby.onServerReadied -= SpawnPlayer;
     }
-
+    /// <summary>
+    /// Spawn the player in
+    /// </summary>
+    /// <param name="conn"></param>
     [Server]
     public void SpawnPlayer(NetworkConnection conn)
     {

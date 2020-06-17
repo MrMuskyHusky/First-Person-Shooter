@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Free for fall GameMode
+/// </summary>
 public class GameModeFFA : GameMode
 {
     const string typeName = "FFA";

@@ -2,8 +2,9 @@
 using System;
 using TMPro;
 using UnityEngine;
-
-
+/// <summary>
+/// Communicate with other players
+/// </summary>
 public class Chat : NetworkBehaviour
 {
     [SerializeField] private GameObject chatUI = null;
@@ -26,12 +27,18 @@ public class Chat : NetworkBehaviour
 
         OnMessage -= HandleNewMessage;
     }
-
+    /// <summary>
+    /// Create a new message
+    /// </summary>
+    /// <param name="message"></param>
     private void HandleNewMessage(string message)
     {
         chatText.text += message;
     }
-
+    /// <summary>
+    /// Send what the user wrote down in chat
+    /// </summary>
+    /// <param name="message"></param>
     [Client]
     public void Send(string message)
     {
@@ -43,7 +50,10 @@ public class Chat : NetworkBehaviour
 
         inputField.text = string.Empty;
     }
-
+    /// <summary>
+    /// Recieve message from other clients
+    /// </summary>
+    /// <param name="message"></param>
     [Command]
     private void CmdSendMessage(string message)
     {

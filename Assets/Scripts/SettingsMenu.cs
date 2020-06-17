@@ -2,7 +2,9 @@
 using UnityEngine.Audio;
 using UnityEngine.UI;
 using System.Collections;
-
+/// <summary>
+/// Change audio system, quality or fullscreen.
+/// </summary>
 public class SettingsMenu : MonoBehaviour
 {
     Resolution[] resolutions;
@@ -27,21 +29,35 @@ public class SettingsMenu : MonoBehaviour
         dropdownMenu.value = currentResolution;
     }
 
+    /// <summary>
+    /// Set the game fullscreen if true.
+    /// </summary>
+    /// <param name="isFullScreen"></param>
     public void SetFullScreen(bool isFullScreen)
     {
         Screen.fullScreen = isFullScreen;
     }
-
+    /// <summary>
+    /// Change the quality of the game
+    /// </summary>
+    /// <param name="qualityIndex"></param>
     public void SetQuality(int qualityIndex)
     {
         QualitySettings.SetQualityLevel(qualityIndex);
     }
-
+    /// <summary>
+    /// Reduce/Increase the audio source volume
+    /// </summary>
+    /// <param name="volume"></param>
     public void SetVolume (float volume)
     {
         audioMixer.SetFloat("Volume", volume);
     }
-
+    /// <summary>
+    /// Change resolutin.
+    /// </summary>
+    /// <param name="res"></param>
+    /// <returns></returns>
     string ResToString(Resolution res)
     {
         return res.ToString();//res.width + " x " + res.height;

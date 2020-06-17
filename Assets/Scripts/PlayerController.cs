@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+/// <summary>
+/// Controls the player
+/// </summary>
 
 public class PlayerController : NetworkBehaviour
 {
     [SerializeField] public float moveSpeed;
     [SerializeField] public float runSpeed, walkSpeed, crouchSpeed, jumpSpeed;
-    [SerializeField] public float curHealth;
+    [SyncVar] public float curHealth;
     [SerializeField] public float _gravity = 20;
     //Struct - Contains Multiple Variables (eg...3 floats)
     private Vector3 _moveDir;
@@ -48,7 +51,7 @@ public class PlayerController : NetworkBehaviour
     private void OnDisable() => PlayerControls.Disable();
 
     [Client]
-    private void Update()
+    void Update()
     {
         verticalDirection = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
         horizontalDirection = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
@@ -59,10 +62,14 @@ public class PlayerController : NetworkBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
         }
-
+        hp.text = curHealth.ToString();
         Move(horizontalDirection, verticalDirection);
     }
-
+    /// <summary>
+    /// Making the player be able to walking around
+    /// </summary>
+    /// <param name="horizontal"></param>
+    /// <param name="vertical"></param>
     [Client]
     public void Move(float horizontal, float vertical)
     {
@@ -98,13 +105,33 @@ public class PlayerController : NetworkBehaviour
             isGrounded = false;
         }
     }
-
-    [Client]
-    public void DamagePlayer(float damage)
+    /// <summary>
+    /// Recieve damage when getting shot from another player
+    /// </summary>
+    /// <param name="damage"></param>
+    public void TakeDamage(float damage)
     {
-        damaged = true;
-        curHealth -= damage;
-        hp.text = curHealth.ToString();
+        Debug.Log("Take Damage");
+        if (isServer)
+        {
+            RpcTakeDamage(damage);
+        }
+        else
+        {
+            CmdTakeDamage(damage);
+        }
+    }
+    [ClientRpc]
+    void RpcTakeDamage(float damage)
+    {
+        Debug.Log("RPC Taking Damage");
+        this.curHealth -= damage;
+    }
+    [Command]
+    void CmdTakeDamage(float damage)
+    {
+        Debug.Log("cmd Taking Damage");
+        TakeDamage(damage);
     }
 
     [Client]

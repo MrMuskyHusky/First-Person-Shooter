@@ -3,10 +3,8 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
-    public static bool GameIsOver;
     public bool isPaused;
 
-    public GameObject gameOverUI;
     public GameObject pauseMenu;
 
     // Update is called once per frame
@@ -27,13 +25,13 @@ public class GameManager : MonoBehaviour
     {
         Scene activeScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(activeScene.buildIndex);
-        Time.timeScale = 1;
     }
     public void MainMenu()
     {
         Scene active = SceneManager.GetActiveScene();
         SceneManager.LoadScene(0);
-        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void Pause()
@@ -41,15 +39,16 @@ public class GameManager : MonoBehaviour
         // Code from Pause.cs
         pauseMenu.SetActive(true);
         isPaused = true;
-        Time.timeScale = 0;
+        Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     public void UnPause()
     {
-        Time.timeScale = 1;
         isPaused = false;
+        pauseMenu.SetActive(false);
+        Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -60,11 +59,5 @@ public class GameManager : MonoBehaviour
 #else
          Application.Quit();
 #endif
-    }
-    public void EndGame()
-    {
-        GameIsOver = true;
-        gameOverUI.SetActive(true);
-        Time.timeScale = 0;
     }
 }

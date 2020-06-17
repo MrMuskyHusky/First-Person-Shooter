@@ -59,7 +59,14 @@ public class Player : NetworkBehaviour
             DropWeapon(currentWeapon);
         }
     }
-
+    /// <summary>
+    /// Pick up a weapon/flag
+    /// </summary>
+    /// <param name="weaponObject"></param>
+    /// <param name="originalLocation"></param>
+    /// <param name="teamID"></param>
+    /// <param name="weaponID"></param>
+    /// <param name="overrideLock"></param>
     [Client]
     public void PickUpWeapon(GameObject weaponObject, Vector3 originalLocation, int teamID, int weaponID, bool overrideLock = false)
     {
@@ -68,7 +75,11 @@ public class Player : NetworkBehaviour
         weapons[weaponID].SetWeaponGameObject(teamID, weaponObject, originalLocation);
  
     }
-
+    /// <summary>
+    /// Switch weapons
+    /// </summary>
+    /// <param name="weaponID"></param>
+    /// <param name="overrideLock"></param>
     [Client]
     public void SwitchWeapon(int weaponID, bool overrideLock = false)
     {
@@ -87,7 +98,10 @@ public class Player : NetworkBehaviour
 
         weapons[currentWeapon].gameObject.SetActive(true);
     }
-
+    /// <summary>
+    /// Player able to drop his weapon/flag.
+    /// </summary>
+    /// <param name="weaponID"></param>
     [Client]
     public void DropWeapon(int weaponID)
     {
@@ -106,7 +120,10 @@ public class Player : NetworkBehaviour
             SwitchWeapon(lastWeapon,true);//if possible
         }
     }
-
+    /// <summary>
+    /// Switch back to the last weapon equipped
+    /// </summary>
+    /// <param name="weaponID"></param>
     [Client]
     public void ReturnWeapon(int weaponID)
     {
